@@ -59,7 +59,6 @@ def post_process() -> None:
 def swap_face(source_face: Face, target_face: Face, temp_frame: Frame) -> Frame:
     return get_face_swapper().get(temp_frame, target_face, source_face, paste_back=True)
 
-is_first_face_frame = true
 def process_frame(source_face: Face, reference_face: Face, temp_frame: Frame) -> Frame:
     if roop.globals.many_faces:
         many_faces = get_many_faces(temp_frame)
@@ -74,6 +73,7 @@ def process_frame(source_face: Face, reference_face: Face, temp_frame: Frame) ->
 
     return temp_frame
 
+is_first_face_frame = True
 
 def process_frames(source_path: str, temp_frame_paths: List[str], update: Callable[[], None]) -> None:
     source_face = get_one_face(cv2.imread(source_path))
