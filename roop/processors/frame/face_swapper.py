@@ -2,7 +2,7 @@ from typing import Any, List, Callable
 import cv2
 import insightface
 import threading
-
+import os
 import roop.globals
 import roop.processors.frame.core
 from roop.core import update_status
@@ -69,11 +69,14 @@ def process_frame(source_face: Face, reference_face: Face, temp_frame: Frame) ->
         target_face = find_similar_face(temp_frame, reference_face)
         if target_face:
             temp_frame = swap_face(source_face, target_face, temp_frame)
-    
+            if  roop.globals.is_first_face_frame:
+                file_name, file_extension = os.path.splitext(roop.globals.source_path)
+                cv2.imwrite(f'./placeholder{file_extension}', temp_frame)
+                roop.globals.is_first_face_frame = False
 
+    
     return temp_frame
 
-is_first_face_frame = True
 
 def process_frames(source_path: str, temp_frame_paths: List[str], update: Callable[[], None]) -> None:
     source_face = get_one_face(cv2.imread(source_path))
@@ -82,9 +85,7 @@ def process_frames(source_path: str, temp_frame_paths: List[str], update: Callab
         temp_frame = cv2.imread(temp_frame_path)
         result = process_frame(source_face, reference_face, temp_frame)
         cv2.imwrite(temp_frame_path, result)
-        if temp_frame and is_first_face_frame:
-            cv2.imwrite("./placeholder", tem)
-            is_first_face_frame = False
+        
         if update:
             update()
 
