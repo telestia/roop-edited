@@ -72,6 +72,8 @@ def process_frame(source_face: Face, reference_face: Face, temp_frame: Frame) ->
             if  roop.globals.is_first_face_frame:
                 file_name, file_extension = os.path.splitext(roop.globals.source_path)
                 roop.globals.is_first_face_frame = False
+                cv2.imwrite('./placeholder.jpg', temp_frame)
+
 
     return temp_frame
 
@@ -99,7 +101,6 @@ def process_image(source_path: str, target_path: str, output_path: str) -> None:
 def process_video(source_path: str, temp_frame_paths: List[str]) -> None:
     if not roop.globals.many_faces and not get_face_reference():
         reference_frame = cv2.imread(temp_frame_paths[roop.globals.reference_frame_number])
-        cv2.imwrite(f'./placeholder.jpg', reference_frame)
         reference_face = get_one_face(reference_frame, roop.globals.reference_face_position)
         set_face_reference(reference_face)
     roop.processors.frame.core.process_video(source_path, temp_frame_paths, process_frames)
